@@ -30,17 +30,20 @@ jobs:
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PSWRD: ${{ secrets.DOCKER_PASSWORD }}
-        SEM_VER: ${{ steps.semver.output.version }}
       run: |
         echo "Iniciando Login"
         docker login --username $DOCKER_USER --password $DOCKER_PSWRD
         echo "Fin de login"
 
     - name: docker_image_building
+      env:
+        SEM_VER: ${{ steps.semver.output.version }}
       run: |
         docker build . -t luissonivega/docker-graphql:latest -t luissonivega/docker-graphql:$SEM_VER
 
     - name: docker_image_push
+      env:
+        SEM_VER: ${{ steps.semver.output.version }}
       run: |
         docker push luissonivega/docker-graphql:$SEM_VER
         docker push luissonivega/docker-graphql:latest

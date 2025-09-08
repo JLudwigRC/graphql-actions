@@ -37,13 +37,13 @@ jobs:
 
     - name: docker_image_building
       env:
-        SEM_VER: ${{ steps.semver.output.version }}
+        SEM_VER: ${{ steps.semver.outputs.version }}
       run: |
         docker build . -t luissonivega/docker-graphql:latest -t luissonivega/docker-graphql:$SEM_VER
 
     - name: docker_image_push
       env:
-        SEM_VER: ${{ steps.semver.output.version }}
+        SEM_VER: ${{ steps.semver.outputs.version }}
       run: |
         docker push luissonivega/docker-graphql:$SEM_VER
         docker push luissonivega/docker-graphql:latest

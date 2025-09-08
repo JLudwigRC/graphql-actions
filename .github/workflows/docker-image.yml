@@ -18,10 +18,19 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Semantic_version
+      id: semver
+      uses: PaulHatch/semantic-version@v4.0.3
+      with:
+        major_pattern: "major:"
+        minor_pattern: "feat:"
+        format: "${major}.${minor}.${patch}-prerelease${increment}"
+
     - name: docker-login
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PSWRD: ${{ secrets.DOCKER_PASSWORD }}
+        SEM_VER: ${{ steps.semver.output.version }}
       run: |
         echo "Iniciando Login"
         docker login --username $DOCKER_USER --password $DOCKER_PSWRD
@@ -29,11 +38,11 @@ jobs:
 
     - name: docker_image_building
       run: |
-        docker build . -t luissonivega/docker-graphql:latest -t luissonivega/docker-graphql:0.0.2
+        docker build . -t luissonivega/docker-graphql:latest -t luissonivega/docker-graphql:$SEM_VER
 
     - name: docker_image_push
       run: |
+        docker push luissonivega/docker-graphql:$SEM_VER
         docker push luissonivega/docker-graphql:latest
-        docker push luissonivega/docker-graphql:0.0.2
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
